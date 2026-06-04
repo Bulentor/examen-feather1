@@ -1,0 +1,29 @@
+{% extends "myapp/base.html" %}
+{% block content %}
+
+{% if user.is_superuser or user.is_staff %}
+  <form method="get">
+    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Поиск...">
+    <button type="submit">Поиск</button>
+  </form>
+
+  <script>
+    let f = document.querySelector('form');
+    f.addEventListener('change', () => {
+      f.submit();
+    });
+  </script>
+{% endif %}
+
+{% for item in items %}
+  <div class="{% if item.skidka > 15 %}sale{% endif %}">
+    <b>{{item.nazvanie}}</b>
+    <p>Цена: {{item.cena_so_skidkoi|floatformat:2}}</p>
+    {% if user.is_superuser or user.is_staff %}
+    <a href="{% url 'entity_edit' item.pk %}">Изменить</a>
+    <a href="{% url 'entity_delete' item.pk %}">Удалить</a>
+    {% endif %}
+  </div>
+{% endfor %}
+
+{% endblock %}
